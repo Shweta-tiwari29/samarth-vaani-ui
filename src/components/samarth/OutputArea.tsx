@@ -1,4 +1,4 @@
-import { Volume2, FileText, Search, BookOpen, ChevronRight } from "lucide-react";
+import { Volume2, FileText, Search, BookOpen, ChevronRight, Download, MessageCircle, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -79,24 +79,41 @@ const OutputArea = () => {
         </Card>
       </section>
 
-      {/* Application Generator */}
+      {/* Application Generator with Export Buttons */}
       <section aria-labelledby="app-gen-heading">
         <div className="mb-3 flex items-center gap-2">
           <FileText className="h-5 w-5 text-primary" />
           <h2 id="app-gen-heading" className="text-lg font-bold text-foreground">Application Generator</h2>
         </div>
         <Card className="border-dashed border-2 border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer">
-          <CardContent className="flex items-center gap-4 py-6">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <FileText className="h-7 w-7" />
+          <CardContent className="py-6">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                <FileText className="h-7 w-7" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground">Generate Application</h3>
+                <p className="text-sm text-muted-foreground">
+                  Create an official application for schemes, rights claims, or government requests.
+                </p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-muted-foreground hidden sm:block" />
             </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-foreground">Generate Application</h3>
-              <p className="text-sm text-muted-foreground">
-                Create an official application for schemes, rights claims, or government requests.
-              </p>
+            {/* Multi-Format Export */}
+            <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
+              <Button size="sm" className="gap-1.5 text-xs" aria-label="Download as PDF">
+                <Download className="h-3.5 w-3.5" />
+                Download PDF
+              </Button>
+              <Button size="sm" variant="outline" className="gap-1.5 text-xs border-success text-success hover:bg-success/10" aria-label="Send via WhatsApp">
+                <MessageCircle className="h-3.5 w-3.5" />
+                WhatsApp File
+              </Button>
+              <Button size="sm" variant="outline" className="gap-1.5 text-xs" aria-label="Send via SMS">
+                <Mail className="h-3.5 w-3.5" />
+                Send via SMS
+              </Button>
             </div>
-            <ChevronRight className="h-5 w-5 text-muted-foreground" />
           </CardContent>
         </Card>
       </section>
