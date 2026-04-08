@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Settings, Globe, User } from "lucide-react";
+import { Settings, Globe, Minus, Plus, Eye, Gauge } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useAccessibility } from "@/contexts/AccessibilityContext";
 import AccessibilityMenu from "./AccessibilityMenu";
+import ProfileMenu from "./ProfileMenu";
 import logo from "@/assets/samarth-vaani-logo.png";
 import {
   Select,
@@ -11,6 +13,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const languages = [
   { value: "en", label: "English" },
@@ -26,19 +34,13 @@ const languages = [
   { value: "or", label: "ଓଡ଼ିଆ" },
 ];
 
-const disabilities = [
-  "Visual Impairment",
-  "Hearing Impairment",
-  "Locomotor Disability",
-  "Intellectual Disability",
-  "Mental Illness",
-  "Multiple Disabilities",
-  "Other",
-];
-
 const Header = () => {
   const [showA11y, setShowA11y] = useState(false);
-  const { language, setLanguage, disabilityType, setDisabilityType } = useAccessibility();
+  const { language, setLanguage, state, toggle } = useAccessibility();
+  const [inputLang, setInputLang] = useState("hi");
+  const [outputLang, setOutputLang] = useState("en");
+  const [highContrast, setHighContrast] = useState(false);
+  const [readerSpeed, setReaderSpeed] = useState([1]);
 
   return (
     <>
@@ -49,14 +51,84 @@ const Header = () => {
             <h1 className="text-xl font-bold tracking-tight md:text-2xl">SamarthVaani</h1>
           </div>
 
-          <div className="flex items-center gap-2 md:gap-3">
-            {/* Language */}
-            <Select value={language} onValueChange={setLanguage}>
-              <SelectTrigger
-                className="w-auto gap-1 border-primary-foreground/30 bg-primary text-primary-foreground hover:bg-primary-foreground/10 text-sm"
-                aria-label="Select language"
+          <div className="flex items-center gap-1.5 md:gap-2">
+            {/* Font Size A-/A+ */}
+            <div className="hidden items-center gap-0.5 md:flex">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 border-primary-foreground/30 bg-primary text-primary-foreground hover:bg-primary-foreground/10 text-xs font-bold"
+                aria-label="Decrease font size"
+                onClick={() => {
+                  if (!state.smallerText) toggle("smallerText");
+                }}
               >
-                <Globe className="h-4 w-4" />
+                <span className="flex items-center text-xs">A<Minus className="h-3 w-3" /></span>
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 border-primary-foreground/30 bg-primary text-primary-foreground hover:bg-primary-foreground/10 text-xs font-bold"
+                aria-label="Increase font size"
+                onClick={() => {
+                  if (!state.biggerText) toggle("biggerText");
+                }}
+              >
+                <span className="flex items-center text-xs">A<Plus className="h-3 w-3" /></span>
+              </Button>
+            </div>
+
+            {/* High Contrast */}
+            <div className="hidden items-center gap-1 md:flex">
+              <Button
+                variant="outline"
+                size="icon"
+                className={`h-8 w-8 border-primary-foreground/30 bg-primary text-primary-foreground hover:bg-primary-foreground/10 ${highContrast ? "ring-2 ring-accent" : ""}`}
+                aria-label="Toggle high contrast mode"
+                aria-pressed={highContrast}
+                onClick={() => {
+                  setHighContrast(!highContrast);
+                  toggle("invertColors");
+                }}
+              >
+                <Eye className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Screen Reader Speed */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="hidden h-8 w-8 border-primary-foreground/30 bg-primary text-primary-foreground hover:bg-primary-foreground/10 md:flex"
+                  aria-label="Screen reader speed"
+                >
+                  <Gauge className="h-4 w-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56" align="end">
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold text-foreground">Reader Speed: {readerSpeed[0]}x</p>
+                  <Slider
+                    value={readerSpeed}
+                    onValueChange={setReaderSpeed}
+                    min={0.5}
+                    max={2}
+                    step={0.25}
+                    aria-label="Adjust screen reader speed"
+                  />
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            {/* Input Language */}
+            <Select value={inputLang} onValueChange={setInputLang}>
+              <SelectTrigger
+                className="w-auto gap-1 border-primary-foreground/30 bg-primary text-primary-foreground hover:bg-primary-foreground/10 text-xs h-8"
+                aria-label="Input language"
+              >
+                <span className="hidden md:inline text-[10px] opacity-70">IN:</span>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -66,18 +138,18 @@ const Header = () => {
               </SelectContent>
             </Select>
 
-            {/* Disability */}
-            <Select value={disabilityType} onValueChange={setDisabilityType}>
+            {/* Output Language */}
+            <Select value={outputLang} onValueChange={setOutputLang}>
               <SelectTrigger
-                className="hidden w-auto gap-1 border-primary-foreground/30 bg-primary text-primary-foreground hover:bg-primary-foreground/10 text-sm md:flex"
-                aria-label="Select type of disability"
+                className="w-auto gap-1 border-primary-foreground/30 bg-primary text-primary-foreground hover:bg-primary-foreground/10 text-xs h-8"
+                aria-label="Output language"
               >
-                <User className="h-4 w-4" />
-                <SelectValue placeholder="Disability Type" />
+                <span className="hidden md:inline text-[10px] opacity-70">OUT:</span>
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {disabilities.map((d) => (
-                  <SelectItem key={d} value={d}>{d}</SelectItem>
+                {languages.map((l) => (
+                  <SelectItem key={l.value} value={l.value}>{l.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -86,12 +158,15 @@ const Header = () => {
             <Button
               variant="outline"
               size="icon"
-              className="border-primary-foreground/30 bg-primary text-primary-foreground hover:bg-primary-foreground/10"
+              className="h-8 w-8 border-primary-foreground/30 bg-primary text-primary-foreground hover:bg-primary-foreground/10"
               aria-label="Open accessibility options"
               onClick={() => setShowA11y(true)}
             >
-              <Settings className="h-5 w-5" />
+              <Settings className="h-4 w-4" />
             </Button>
+
+            {/* Profile */}
+            <ProfileMenu />
           </div>
         </div>
       </header>

@@ -3,6 +3,7 @@ import Header from "@/components/samarth/Header";
 import InputConsole from "@/components/samarth/InputConsole";
 import OutputArea from "@/components/samarth/OutputArea";
 import SOSButton from "@/components/samarth/SOSButton";
+import FAQSection from "@/components/samarth/FAQSection";
 
 const Index = () => {
   return (
@@ -23,6 +24,7 @@ const Index = () => {
 
             <InputConsole />
             <OutputArea />
+            <FAQSection />
           </div>
         </main>
         <SOSButton />
