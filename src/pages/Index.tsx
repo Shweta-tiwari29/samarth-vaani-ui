@@ -1,16 +1,34 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
+import Header from "@/components/samarth/Header";
+import InputConsole from "@/components/samarth/InputConsole";
+import OutputArea from "@/components/samarth/OutputArea";
+import SOSButton from "@/components/samarth/SOSButton";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
-    </div>
+    <AccessibilityProvider>
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header />
+        <main className="container mx-auto flex-1 px-4 py-6 md:py-10">
+          <div className="mx-auto max-w-4xl space-y-8">
+            {/* Welcome */}
+            <section className="text-center">
+              <h2 className="text-2xl font-bold text-foreground md:text-3xl">
+                Welcome to <span className="text-primary">SamarthVaani</span>
+              </h2>
+              <p className="mt-2 text-base text-muted-foreground">
+                Your AI-powered assistant for discovering schemes, understanding rights, and generating applications.
+              </p>
+            </section>
+
+            <InputConsole />
+            <OutputArea />
+          </div>
+        </main>
+        <SOSButton />
+      </div>
+    </AccessibilityProvider>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
